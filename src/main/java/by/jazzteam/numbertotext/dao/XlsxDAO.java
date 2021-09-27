@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import by.jazzteam.numbertotext.bean.ExponentOfTen;
 import org.apache.poi.ss.usermodel.Cell;
@@ -13,9 +15,13 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
-public class XlxDAOImpl {
-    public static void main(String[] args)
+public class XlsxDAO implements DAO {
+
+    @Override
+    public List<ExponentOfTen> getExponentsOfTen()
     {
+        List<ExponentOfTen> exponentOfTenList = new ArrayList<>();
+
         try
         {
             File file = new File(ClassLoader.getSystemClassLoader().getResource("ExponentsOfTen.xlsx").getFile());
@@ -24,7 +30,7 @@ public class XlxDAOImpl {
             XSSFWorkbook wb = new XSSFWorkbook(fis);
             XSSFSheet sheet = wb.getSheetAt(0);
             Iterator<Row> itr = sheet.iterator();
-            itr.next();
+            itr.next(); //skipping header row
             while (itr.hasNext())
             {
                 Row row = itr.next();
@@ -32,8 +38,6 @@ public class XlxDAOImpl {
                 ExponentOfTen exponentOfTen = new ExponentOfTen();
                 while (cellIterator.hasNext())
                 {
-
-
                     Cell cell = cellIterator.next();
                     int collIndex = cell.getColumnIndex();
 
@@ -50,15 +54,14 @@ public class XlxDAOImpl {
                     }
 
                 }
-
-                System.out.println(exponentOfTen);
-
+                exponentOfTenList.add(exponentOfTen);
             }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return exponentOfTenList;
     }
 }
