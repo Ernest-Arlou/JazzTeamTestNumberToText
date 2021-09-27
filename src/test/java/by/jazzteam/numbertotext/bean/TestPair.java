@@ -1,14 +1,15 @@
 package by.jazzteam.numbertotext.bean;
 
 import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 
 import java.util.Objects;
 
 public class TestPair {
 
-    @CsvBindByName(column = "NUMBER")
+    @CsvBindByPosition(position = 0)
     private String number;
-    @CsvBindByName(column = "EXPECTED_RESULT")
+    @CsvBindByPosition(position = 1)
     private String expectedString;
 
     public TestPair() {

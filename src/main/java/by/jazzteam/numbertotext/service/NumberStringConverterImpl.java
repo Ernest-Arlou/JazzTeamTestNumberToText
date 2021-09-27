@@ -1,8 +1,8 @@
-package by.jazzteam.numbertotext.logic;
+package by.jazzteam.numbertotext.service;
 
 import by.jazzteam.numbertotext.bean.ExponentOfTen;
 import by.jazzteam.numbertotext.dao.DAOHolder;
-import by.jazzteam.numbertotext.logic.constant.NumbersRu;
+import by.jazzteam.numbertotext.service.constant.NumbersRu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 
-public class NumberStringConverter {
+public class NumberStringConverterImpl implements NumberStringConverter {
 
     private static final Map<String, String> MAP_NUMBER_0_TO_19 = NumbersRu.getNumbersMap();
     private static final Map<String, String> MAP_DOZENS = NumbersRu.getDozensMap();
@@ -19,6 +19,7 @@ public class NumberStringConverter {
 
     private static final List<ExponentOfTen> exponentOfTenList = DAOHolder.getInstance().getDAO().getExponentsOfTen();
 
+    @Override
     public String convertNumberToString(String originString, boolean longScale) throws Exception {
         validate(originString);
 

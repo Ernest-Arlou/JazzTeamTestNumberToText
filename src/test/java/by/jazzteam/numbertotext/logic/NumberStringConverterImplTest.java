@@ -1,14 +1,63 @@
 package by.jazzteam.numbertotext.logic;
 
+import by.jazzteam.numbertotext.DAO;
+import by.jazzteam.numbertotext.bean.TestPair;
+import by.jazzteam.numbertotext.service.NumberStringConverter;
+import by.jazzteam.numbertotext.service.NumberStringConverterHolder;
+import by.jazzteam.numbertotext.service.NumberStringConverterImpl;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class NumberStringConverterTest {
+import java.util.ArrayList;
+import java.util.List;
+
+@RunWith(Parameterized.class)
+public class NumberStringConverterImplTest {
+    private static final Logger logger = LoggerFactory.getLogger(NumberStringConverterImplTest.class);
+    private static final String PATH_TO_PAIRS = "testPairs.csv";
+
+    private final String numberString;
+    private final String expectedString;
+
+    public NumberStringConverterImplTest(String numberString, String expectedString){
+        this.numberString = numberString;
+        this.expectedString = expectedString;
+    }
+
+    @Parameterized.Parameters(name = "{0}")
+    public static List<Object[]> numberPairs(){
+
+        DAO dao = new DAO();
+
+        List<TestPair> testPairs = dao.getTestPairs(PATH_TO_PAIRS);
+
+        List<Object[]> pairs= new ArrayList<>();
+        if (!testPairs.isEmpty())
+        for (TestPair testPair : testPairs) {
+            pairs.add(new Object[]{testPair.getNumber(), testPair.getExpectedString()});
+        }
+        return pairs;
+    }
 
     @Test
     public void convertNumberToString() {
 
-        NumberStringConverter converter = new NumberStringConverter();
+        NumberStringConverter converter = NumberStringConverterHolder.getInstance().getNumberStringConverterHolder();
+        try {
+            Assert.assertEquals(expectedString,converter.convertNumberToString(numberString,false) );
+        } catch (Exception e) {
+            logger.error(e.toString());
+        }
+    }
+
+
+    @Test
+    public void convertNumberToStringHardcoded() {
+        NumberStringConverter converter = NumberStringConverterHolder.getInstance().getNumberStringConverterHolder();
         String[][] actualAndExpected = {{
                 "0",
                 "-1597534862761943",
@@ -34,7 +83,7 @@ public class NumberStringConverterTest {
                 Assert.assertEquals(expected, actual);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.toString());
             }
         }
     }

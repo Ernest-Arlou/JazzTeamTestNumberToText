@@ -1,4 +1,4 @@
-package by.jazzteam.numbertotext.logic.constant;
+package by.jazzteam.numbertotext.service.constant;
 
 import java.util.Map;
 import java.util.TreeMap;

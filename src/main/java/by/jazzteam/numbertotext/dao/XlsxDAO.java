@@ -13,9 +13,13 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class XlsxDAO implements DAO {
+
+    private static final Logger logger = LoggerFactory.getLogger(XlsxDAO.class);
 
     @Override
     public List<ExponentOfTen> getExponentsOfTen()
@@ -57,10 +61,8 @@ public class XlsxDAO implements DAO {
                 exponentOfTenList.add(exponentOfTen);
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.toString());
         }
         return exponentOfTenList;
     }
