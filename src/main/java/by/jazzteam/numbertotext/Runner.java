@@ -1,12 +1,35 @@
 package by.jazzteam.numbertotext;
 
-/**
- * Hello world!
- */
-public class App {
+import by.jazzteam.numbertotext.logic.NumberStringConverter;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
+public class Runner {
     static String numberStr = "12345678910";
 
     public static void main(String[] args) throws Exception {
+
+        NumberStringConverter conv = new NumberStringConverter();
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.print("Введите ваше число: ");
+        System.out.print(conv.convertNumberToString(read.readLine(), false));
+        read.close();
+
+        System.out.println(conv.convertNumberToString("1000000", false));
+
+
+
+
+
+
+
+
+
+
+
 
 
         String originStr = "1000000000000";
