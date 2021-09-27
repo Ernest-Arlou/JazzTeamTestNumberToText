@@ -4,22 +4,19 @@ import by.jazzteam.numbertotext.bean.ExponentOfTen;
 import by.jazzteam.numbertotext.dao.DAOHolder;
 import by.jazzteam.numbertotext.service.constant.NumbersRu;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import java.util.regex.Pattern;
 
-
-public class NumberStringConverterImpl implements NumberStringConverter {
+public class NumberStringConverterImpl extends AbstractNumberStringConverter {
     private static final char ZERO_CHAR = '0';
     private static final char ONE_CHAR = '1';
 
     private static final String ZERO = "0";
     private static final String ONE = "1";
-    private static final String ONE_DECLINATION  = "1_";
+    private static final String ONE_DECLINATION = "1_";
     private static final String TWO = "2";
-    private static final String TWO_DECLINATION  = "2_";
+    private static final String TWO_DECLINATION = "2_";
     private static final String MINUS = "-";
     private static final String SPACE = " ";
     private static final String MULTIPLE_ENDING = "ов";
@@ -27,8 +24,6 @@ public class NumberStringConverterImpl implements NumberStringConverter {
     private static final String THOUSAND = "тысяч";
     private static final String THOUSAND_SINGLE_ENDING = "а";
     private static final String THOUSAND_MULTIPLE_ENDING = "и";
-
-    private static final String PATTERN_NUMBERS_AND_MINUS = "-?[0-9]+";
 
     private static final Map<String, String> MAP_NUMBER_0_TO_19 = NumbersRu.getNumbersMap();
     private static final Map<String, String> MAP_DOZENS = NumbersRu.getDozensMap();
@@ -106,43 +101,6 @@ public class NumberStringConverterImpl implements NumberStringConverter {
         return "";
     }
 
-    private void validate(String string) throws Exception {
-        if (string.length() == 0)
-            throw new Exception("Empty string");
-
-        if (!Pattern.compile(PATTERN_NUMBERS_AND_MINUS).matcher(string).matches())
-            throw new Exception("Incorrect format. Only numbers and \"-\" at the beginning are allowed.");
-    }
-
-    private String removeZerosAtBeginning(String string) {
-        int strLength = string.length();
-
-        if (strLength > 1) {
-            for (int i = 0; i < strLength; i++) {
-                if (string.startsWith(ZERO)) {
-                    string = string.substring(1);
-                } else break;
-            }
-        }
-        return string;
-    }
-
-    private List<String> divideByThreeDigits(String originString) {
-
-        List<String> threeDigitPartsList = new ArrayList<>();
-
-        while (originString.length() > 3) {
-            threeDigitPartsList.add(originString.substring(originString.length() - 3));
-            originString = originString.substring(0, originString.length() - 3);
-        }
-        if (originString.length() != 0) {
-            threeDigitPartsList.add(originString);
-        }
-
-        return threeDigitPartsList;
-    }
-
-
     private String convertTwoDigitPart(String threeDigitPart, int numberOfThreeDigitPart, boolean longScale) {
         String convertedStr = "";
 
@@ -163,9 +121,7 @@ public class NumberStringConverterImpl implements NumberStringConverter {
 
             if (threeDigitPart.charAt(1) == ZERO_CHAR && threeDigitPart.charAt(2) == ZERO_CHAR && numberOfThreeDigitPart > 2) {
                 convertedStr += getExponentOfTenName(String.valueOf(numberOfThreeDigitPart), longScale) + MULTIPLE_ENDING + SPACE;
-            }
-
-            else if (threeDigitPart.charAt(1) == ZERO_CHAR && threeDigitPart.charAt(2) == ZERO_CHAR && numberOfThreeDigitPart == 2) {
+            } else if (threeDigitPart.charAt(1) == ZERO_CHAR && threeDigitPart.charAt(2) == ZERO_CHAR && numberOfThreeDigitPart == 2) {
                 convertedStr += getExponentOfTenName(String.valueOf(numberOfThreeDigitPart), longScale) + SPACE;
             }
         }
@@ -192,9 +148,7 @@ public class NumberStringConverterImpl implements NumberStringConverter {
                 transformedStr += MULTIPLE_ENDING;
 
             transformedStr += SPACE;
-        }
-
-        else if (!originStr.startsWith(ZERO)) {
+        } else if (!originStr.startsWith(ZERO)) {
             transformedStr += MAP_DOZENS.get(originStr.substring(0, 1)) + SPACE;
 
             if (originStr.endsWith(ZERO)) {
@@ -259,7 +213,8 @@ public class NumberStringConverterImpl implements NumberStringConverter {
             //степеням, таким как миллион и дальше придает окончание "ов"
             if (numberOfThreeDigitPart > 2)
                 translatedString += getExponentOfTenName(String.valueOf(numberOfThreeDigitPart), longScale) + MULTIPLE_ENDING + SPACE;
-            else if (numberOfThreeDigitPart == 2) translatedString += getExponentOfTenName(String.valueOf(numberOfThreeDigitPart), longScale) + SPACE;
+            else if (numberOfThreeDigitPart == 2)
+                translatedString += getExponentOfTenName(String.valueOf(numberOfThreeDigitPart), longScale) + SPACE;
         } else translatedString += MAP_NUMBER_0_TO_19.get(originStr) + SPACE;
 
         return translatedString;
